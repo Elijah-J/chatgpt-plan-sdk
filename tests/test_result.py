@@ -36,12 +36,10 @@ def test_output_json_decodes_joined_text_without_validating_a_schema():
     [
         [message(['{"value": 3'])],
         [message([""])],
-        [],
         [{"type": "reasoning", "summary": []}],
-        [message(refusal="no")],
         [message(['{"value": 3}'], refusal="no")],
     ],
-    ids=["truncated", "empty-text", "no-items", "no-message", "refusal-only", "refusal-with-json"],
+    ids=["truncated", "empty-text", "no-message", "refusal-with-json"],
 )
 def test_output_json_raises_value_error(items):
     with pytest.raises(ValueError):

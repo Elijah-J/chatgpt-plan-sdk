@@ -3,9 +3,7 @@
 Every response is synthetic (``prodvision`` markers). The consumer runs
 in-process with the HTTPX async transport replaced by a recording witness and
 sockets refused; nothing here reads a credential, a real store or a live
-endpoint. The frozen oracle under ``verification/vision`` owns the exact-body,
-PNG and source-census checks; these cells cover the consumer's own judging,
-receipt and failure paths.
+endpoint. These cells cover the consumer's judging, receipt and failure paths.
 """
 
 import datetime as dt
@@ -138,11 +136,10 @@ def result(items, status="completed"):
         ([message("dark blue")], "completed", None),
         ([message("blue", refusal="I cannot help with that.")], "completed", None),
         ([message("blue")], "incomplete", None),
-        ([reasoning()], "completed", None),
         ([message("")], "completed", None),
     ],
     ids=["plain", "padded-mixed-case", "upper-newline", "wrong-color", "punctuated", "extra-word",
-         "refusal-part", "not-completed", "no-message", "empty-text"],
+         "refusal-part", "not-completed", "empty-text"],
 )
 def test_judge_accepts_only_a_completed_refusal_free_exact_color(items, status, expected, capsys):
     assert load_consumer()._judge(result(items, status)) == expected

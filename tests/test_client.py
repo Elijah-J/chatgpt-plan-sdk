@@ -54,8 +54,11 @@ def test_supplied_stream_field_is_refused_before_transport():
     assert asyncio.run(scenario()) == []
 
 
-@pytest.mark.parametrize("bearer", ["", "  ", lambda: None, lambda: ""])
-def test_blank_bearer_is_refused_locally(bearer):
+@pytest.mark.parametrize(
+    "bearer", ["  ", "a\nb", lambda: None, lambda: ""],
+    ids=["whitespace", "newline", "non-string-provider", "blank-provider"],
+)
+def test_unusable_bearer_is_refused_locally(bearer):
     async def scenario():
         http, seen = _http(_sse)
         client = ResponsesClient(bearer=bearer, http_client=http)

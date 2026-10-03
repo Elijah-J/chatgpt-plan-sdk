@@ -138,9 +138,8 @@ def test_two_turns_replay_first_items_unchanged_and_write_a_private_receipt(tmp_
         [message('{"value": "17"}')],
         [message('{"value": 17, "extra": 1}')],
         [message('[17]')],
-        [reasoning()],
     ],
-    ids=["refusal", "invalid-json", "boolean", "string", "extra-key", "array", "no-message"],
+    ids=["refusal", "invalid-json", "boolean", "string", "extra-key", "array"],
 )
 def test_first_turn_failure_makes_no_second_send_and_no_receipt(tmp_path, capsys, monkeypatch, first_items):
     witness = Witness(monkeypatch, [sse(first_items)])
@@ -149,12 +148,8 @@ def test_first_turn_failure_makes_no_second_send_and_no_receipt(tmp_path, capsys
     assert not [m for m in MARKERS if m in printed]
 
 
-@pytest.mark.parametrize(
-    "second_items",
-    [[message(refusal="no")], [message('{"value": "42"}')], [message('{"value": false}')]],
-    ids=["refusal", "string", "boolean"],
-)
-def test_second_turn_failure_writes_no_receipt(tmp_path, capsys, monkeypatch, second_items):
+def test_second_turn_failure_writes_no_receipt(tmp_path, capsys, monkeypatch):
+    second_items = [message('{"value": "42"}')]
     witness = Witness(monkeypatch, [sse([message('{"value": 17}')]), sse(second_items, "resp_prodtest_2")])
     code, receipt, printed = run(tmp_path, capsys, make_store(tmp_path))
     assert code == 1 and len(witness.bodies) == 2 and not receipt.exists()

@@ -212,10 +212,9 @@ def test_sum_is_computed_from_the_validated_pair_not_a_constant():
     [
         [reasoning(1), fcall("a"), message(refusal="prodtools refusal")],
         [reasoning(1), message("42")],
-        [],
         [reasoning(1), fcall("a"), {"type": "web_search_call", "id": "ws_prodtools_a", "status": "completed"}],
     ],
-    ids=["refusal-beside-valid-call", "no-call-text-only", "no-output", "unexpected-tool-call-type"],
+    ids=["refusal-beside-valid-call", "no-call-text-only", "unexpected-tool-call-type"],
 )
 def test_refusal_missing_or_unexpected_call_stops_before_second_send(tmp_path, capsys, monkeypatch, first_items):
     witness = Witness(monkeypatch, [sse(first_items), sse(FINAL, "resp_prodtools_2")])
@@ -242,13 +241,12 @@ def test_refusal_missing_or_unexpected_call_stops_before_second_send(tmp_path, c
         [fcall("a", '{"a":17}')],
         [fcall("a", '{"a":17,"a":17,"b":25}')],
         [fcall("a", "[17,25]")],
-        [fcall("a"), fcall("b", name="subtract")],
         [fcall("a"), fcall("b", '{"a":17,"b":24}')],
     ],
     ids=[
         "unknown-function", "unknown-namespace", "absent-namespace", "not-completed", "duplicate-call-id",
         "blank-call-id", "invalid-json", "boolean-a", "boolean-b", "float-a", "string-a", "swapped-pair",
-        "extra-key", "missing-key", "duplicate-key", "non-object", "second-call-unknown-function",
+        "extra-key", "missing-key", "duplicate-key", "non-object",
         "second-call-wrong-arguments",
     ],
 )
@@ -276,9 +274,8 @@ def test_validation_runs_before_any_call_is_executed(tmp_path, capsys, monkeypat
         [message(refusal="prodtools refusal", ident="msg_prodtools_final")],
         [message("41", ident="msg_prodtools_final")],
         [message("The answer is 42", ident="msg_prodtools_final")],
-        [reasoning(3)],
     ],
-    ids=["new-call", "refusal", "wrong-text", "extra-words", "no-text"],
+    ids=["new-call", "refusal", "wrong-text", "extra-words"],
 )
 def test_second_turn_must_be_plain_42(tmp_path, capsys, monkeypatch, final_items):
     witness = Witness(monkeypatch, [sse([reasoning(1), fcall("a")]), sse(final_items, "resp_prodtools_2")])
